@@ -1,8 +1,5 @@
 const {exec} = require('child_process');
-
-const whiteList=[
-    'org.lstec',
-];
+const fs = require('fs');
 
 function uninstallAppsFromAllDevice(){
     exec("adb devices | sed '1d' | awk '{print $1}'", function(err, stdout, stderr){
@@ -61,4 +58,19 @@ function uninstallAppFromDevice(deviceSerial, app){
     })
 }
 
-uninstallAppsFromAllDevice();
+
+var whiteList = [];
+fs.readFile("./config.json", 'utf8',function (err, config) {
+    if (err) {
+        console.log('====================================');
+        console.log("err");
+        console.log(err);
+        console.log('====================================');
+    } else {
+        console.log("Get white list: ");
+        whiteList = JSON.parse(config).whiteList;
+        console.log(whiteList);
+    }
+
+    uninstallAppsFromAllDevice();
+})
